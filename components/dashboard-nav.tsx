@@ -2,25 +2,28 @@
 
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
-import { CreditCard, Home, ArrowLeftRight, History, Search, Landmark } from "lucide-react"
+import { CreditCard, Home, ArrowLeftRight, History, Search, Landmark, Users } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { BusinessDropdown } from "@/components/business-dropdown"
 import Image from "next/image"
 
 export function DashboardNav() {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const pathname = usePathname()
 
   const navItems = [
     { href: "/dashboard", label: "Home", icon: Home },
     { href: "/accounts", label: "Accounts", icon: Landmark },
     { href: "/send", label: "Send", icon: ArrowLeftRight },
+    { href: "/recipients", label: "Recipients", icon: Users },
     { href: "/cards", label: "Cards", icon: CreditCard },
     { href: "/transactions", label: "Transactions", icon: History },
   ]
+
+  const businessName = "Easner Bank" // This could come from user context or props
 
   return (
     <div className="fixed left-0 top-0 h-screen w-56 border-r bg-sidebar flex flex-col">
@@ -56,17 +59,12 @@ export function DashboardNav() {
       </nav>
 
       <div className="border-t p-3">
-        <div className="flex items-center gap-3 px-3 py-2">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-              {user?.name?.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{user?.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-          </div>
-        </div>
+        <BusinessDropdown
+          businessName={businessName}
+          adminName={user?.name || "Admin"}
+          adminEmail={user?.email || ""}
+          onSignOut={logout}
+        />
       </div>
     </div>
   )

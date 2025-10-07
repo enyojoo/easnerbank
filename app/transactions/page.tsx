@@ -126,33 +126,24 @@ export default function TransactionsPage() {
 
       <Card className="border-0 shadow-sm">
         <CardContent className="p-6">
-          <div className="flex gap-8">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-green-600" />
-              <div>
-                <p className="text-xs text-muted-foreground">Money in</p>
-                <p className="text-sm font-semibold text-green-600">
-                  +${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <TrendingUp className="h-5 w-5 text-green-600" />
+                <p className="text-sm text-muted-foreground">Money in</p>
               </div>
+              <p className="text-3xl font-semibold tracking-tight text-green-600">
+                +${totalCredit.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+              </p>
             </div>
-            <div className="flex items-center gap-2">
-              <TrendingDown className="h-4 w-4 text-red-600" />
-              <div>
-                <p className="text-xs text-muted-foreground">Money out</p>
-                <p className="text-sm font-semibold text-red-600">
-                  -${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                </p>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <TrendingDown className="h-5 w-5 text-red-600" />
+                <p className="text-sm text-muted-foreground">Money out</p>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4" />
-              <div>
-                <p className="text-xs text-muted-foreground">Net change</p>
-                <p className="text-sm font-semibold">
-                  ${(totalCredit - totalDebit).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                </p>
-              </div>
+              <p className="text-3xl font-semibold tracking-tight text-red-600">
+                -${totalDebit.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+              </p>
             </div>
           </div>
         </CardContent>

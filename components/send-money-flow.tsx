@@ -16,6 +16,8 @@ import {
   ChevronDown,
   ArrowRightLeft,
   Lock,
+  Mail,
+  Phone,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -269,6 +271,8 @@ const currencyNames: Record<string, string> = {
 
 interface RecipientInfo {
   name: string
+  email: string
+  phone: string
   accountNumber: string
   routingNumber?: string
   iban?: string
@@ -284,6 +288,8 @@ export function SendMoneyFlow() {
   const [amount, setAmount] = useState("")
   const [recipient, setRecipient] = useState<RecipientInfo>({
     name: "",
+    email: "",
+    phone: "",
     accountNumber: "",
     country: "",
     bankName: "",
@@ -370,9 +376,9 @@ export function SendMoneyFlow() {
   const handlePinSubmit = () => {
     if (pin.length === 4) {
       const transferId = `TXN${Date.now()}`
-        router.push(
-          `/send/status?id=${transferId}&amount=${amount}&currency=${currency}&recipient=${encodeURIComponent(recipient.name)}`,
-        )
+      router.push(
+        `/send/status?id=${transferId}&amount=${amount}&currency=${currency}&recipient=${encodeURIComponent(recipient.name)}`,
+      )
     }
   }
 
@@ -460,6 +466,38 @@ export function SendMoneyFlow() {
                   />
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    Email Address
+                  </label>
+                  <Input
+                    value={recipient.email}
+                    onChange={(e) => setRecipient({ ...recipient, email: e.target.value })}
+                    placeholder="john.doe@example.com"
+                    type="email"
+                    className="h-12 placeholder:text-muted-foreground/60"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    Phone Number
+                  </label>
+                  <Input
+                    value={recipient.phone}
+                    onChange={(e) => setRecipient({ ...recipient, phone: e.target.value })}
+                    placeholder="+1 555 123 4567"
+                    type="tel"
+                    className="h-12 placeholder:text-muted-foreground/60"
+                    required
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -496,19 +534,8 @@ export function SendMoneyFlow() {
                   </div>
                 )}
 
-                <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">Bank Name</label>
-                  <Input
-                    value={recipient.bankName}
-                    onChange={(e) => setRecipient({ ...recipient, bankName: e.target.value })}
-                    placeholder="Bank Name"
-                    className="h-12 placeholder:text-muted-foreground/60 capitalize"
-                    required
-                  />
-                </div>
-
                 {currency === "EUR" && (
-                  <>
+                  <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
                       <label className="text-xs text-muted-foreground">IBAN</label>
                       <Input
@@ -529,11 +556,11 @@ export function SendMoneyFlow() {
                         required
                       />
                     </div>
-                  </>
+                  </div>
                 )}
 
                 {currency === "GBP" && (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-3 gap-3">
                     <div className="space-y-2">
                       <label className="text-xs text-muted-foreground">Sort Code</label>
                       <Input
@@ -544,12 +571,12 @@ export function SendMoneyFlow() {
                         required
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 col-span-2">
                       <label className="text-xs text-muted-foreground">Account Number</label>
                       <Input
                         value={recipient.accountNumber}
                         onChange={(e) => setRecipient({ ...recipient, accountNumber: e.target.value })}
-                        placeholder="31926819"
+                        placeholder="12345678"
                         className="h-12 placeholder:text-muted-foreground/60 normal-case"
                         required
                       />
@@ -569,13 +596,24 @@ export function SendMoneyFlow() {
                     />
                   </div>
                 )}
+
+                <div className="space-y-2">
+                  <label className="text-xs text-muted-foreground">Bank Name</label>
+                  <Input
+                    value={recipient.bankName}
+                    onChange={(e) => setRecipient({ ...recipient, bankName: e.target.value })}
+                    placeholder="Bank Name"
+                    className="h-12 placeholder:text-muted-foreground/60 capitalize"
+                    required
+                  />
+                </div>
               </CardContent>
             </Card>
           )}
 
           <Button
             onClick={handleNext}
-            disabled={!recipient.name || !recipient.accountNumber || !recipient.country || !recipient.bankName}
+            disabled={!recipient.name || !recipient.email || !recipient.phone || !recipient.accountNumber || !recipient.country || !recipient.bankName}
             size="lg"
             className="w-full h-11"
           >
