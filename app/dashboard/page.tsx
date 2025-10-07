@@ -90,7 +90,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex gap-2">
               <Button asChild>
-                <Link href="/dashboard/transfers">Send Money</Link>
+                <Link href="/send">Send Money</Link>
               </Button>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Recent activity</h3>
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/dashboard/transactions">View all</Link>
+            <Link href="/transactions">View all</Link>
           </Button>
         </div>
         <Card className="border-0 shadow-sm">

@@ -16,10 +16,10 @@ export function DashboardNav() {
 
   const navItems = [
     { href: "/dashboard", label: "Home", icon: Home },
-    { href: "/dashboard/accounts", label: "Accounts", icon: Landmark },
-    { href: "/dashboard/send", label: "Send", icon: ArrowLeftRight },
-    { href: "/dashboard/cards", label: "Cards", icon: CreditCard },
-    { href: "/dashboard/transactions", label: "Transactions", icon: History },
+    { href: "/accounts", label: "Accounts", icon: Landmark },
+    { href: "/send", label: "Send", icon: ArrowLeftRight },
+    { href: "/cards", label: "Cards", icon: CreditCard },
+    { href: "/transactions", label: "Transactions", icon: History },
   ]
 
   return (
