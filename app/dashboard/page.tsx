@@ -72,7 +72,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-semibold text-foreground">
-          Welcome{user?.name ? `, ${user.name.charAt(0).toUpperCase() + user.name.slice(1)}` : ''}
+          Welcome{user?.name ? `, ${user.name.split(' ')[0].charAt(0).toUpperCase() + user.name.split(' ')[0].slice(1)}` : ''}
         </h1>
       </div>
 
