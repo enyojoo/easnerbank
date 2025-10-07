@@ -296,14 +296,58 @@ export function SendMoneyFlow() {
 
   const selectedCountry = countries.find((c) => c.name === recipient.country)
   const currency = selectedCountry?.currency || "USD"
+  
+  const getCurrencyFlag = (currency: string) => {
+    const currencyFlags: Record<string, string> = {
+      "USD": "🇺🇸",
+      "EUR": "🇪🇺", 
+      "GBP": "🇬🇧",
+      "NGN": "🇳🇬"
+    }
+    return currencyFlags[currency] || "🏦"
+  }
+
+  // Mock conversion rates (1 USD = X other currency)
+  const conversionRates: Record<string, Record<string, number>> = {
+    "USD": { "EUR": 0.85, "GBP": 0.73, "NGN": 1500 },
+    "EUR": { "USD": 1.18, "GBP": 0.86, "NGN": 1765 },
+    "GBP": { "USD": 1.37, "EUR": 1.16, "NGN": 2055 },
+    "NGN": { "USD": 0.00067, "EUR": 0.00057, "GBP": 0.00049 }
+  }
+
+  // Get conversion rate between any two currencies
+  const getConversionRate = (fromCurrency: string, toCurrency: string) => {
+    if (fromCurrency === toCurrency) return 1
+    return conversionRates[fromCurrency]?.[toCurrency] || 1
+  }
+
+  const convertAmount = (amount: number, fromCurrency: string, toCurrency: string) => {
+    if (fromCurrency === toCurrency) return amount
+    const rate = getConversionRate(fromCurrency, toCurrency)
+    return amount * rate
+  }
+
+  const formatName = (name: string) => {
+    return name
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
 
   const hasMatchingCurrencyAccount = mockAccounts.some(
     (acc) => acc.currency === currency && acc.availableBalance >= Number.parseFloat(amount || "0"),
   )
 
+  const hasAnySufficientAccount = mockAccounts.some(
+    (acc) => acc.availableBalance >= Number.parseFloat(amount || "0"),
+  )
+
   const suggestedAccount = hasMatchingCurrencyAccount
     ? mockAccounts.find((acc) => acc.currency === currency && acc.availableBalance >= Number.parseFloat(amount || "0"))
-    : mockAccounts.find((acc) => acc.currency === "USD" && acc.availableBalance >= Number.parseFloat(amount || "0"))
+    : hasAnySufficientAccount
+      ? mockAccounts.find((acc) => acc.currency === "USD" && acc.availableBalance >= Number.parseFloat(amount || "0"))
+      : null
 
   const selectedAccount = mockAccounts.find((acc) => acc.id === selectedAccountId) || suggestedAccount
 
@@ -326,9 +370,9 @@ export function SendMoneyFlow() {
   const handlePinSubmit = () => {
     if (pin.length === 4) {
       const transferId = `TXN${Date.now()}`
-      router.push(
-        `/dashboard/send/status?id=${transferId}&amount=${amount}&currency=${currency}&recipient=${encodeURIComponent(recipient.name)}`,
-      )
+        router.push(
+          `/send/status?id=${transferId}&amount=${amount}&currency=${currency}&recipient=${encodeURIComponent(recipient.name)}`,
+        )
     }
   }
 
@@ -411,7 +455,7 @@ export function SendMoneyFlow() {
                     value={recipient.name}
                     onChange={(e) => setRecipient({ ...recipient, name: e.target.value })}
                     placeholder="John Doe"
-                    className="h-12"
+                    className="h-12 placeholder:text-muted-foreground/60 capitalize"
                     required
                   />
                 </div>
@@ -427,20 +471,6 @@ export function SendMoneyFlow() {
                   Account Details
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-muted-foreground" />
-                    Bank Name
-                  </label>
-                  <Input
-                    value={recipient.bankName}
-                    onChange={(e) => setRecipient({ ...recipient, bankName: e.target.value })}
-                    placeholder="Bank of America"
-                    className="h-12"
-                    required
-                  />
-                </div>
-
                 {currency === "USD" && (
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
@@ -449,7 +479,7 @@ export function SendMoneyFlow() {
                         value={recipient.routingNumber || ""}
                         onChange={(e) => setRecipient({ ...recipient, routingNumber: e.target.value })}
                         placeholder="121000248"
-                        className="h-12"
+                        className="h-12 placeholder:text-muted-foreground/60"
                         required
                       />
                     </div>
@@ -459,12 +489,23 @@ export function SendMoneyFlow() {
                         value={recipient.accountNumber}
                         onChange={(e) => setRecipient({ ...recipient, accountNumber: e.target.value })}
                         placeholder="1234567890"
-                        className="h-12"
+                        className="h-12 placeholder:text-muted-foreground/60 normal-case"
                         required
                       />
                     </div>
                   </div>
                 )}
+
+                <div className="space-y-2">
+                  <label className="text-xs text-muted-foreground">Bank Name</label>
+                  <Input
+                    value={recipient.bankName}
+                    onChange={(e) => setRecipient({ ...recipient, bankName: e.target.value })}
+                    placeholder="Bank Name"
+                    className="h-12 placeholder:text-muted-foreground/60 capitalize"
+                    required
+                  />
+                </div>
 
                 {currency === "EUR" && (
                   <>
@@ -474,7 +515,7 @@ export function SendMoneyFlow() {
                         value={recipient.iban || ""}
                         onChange={(e) => setRecipient({ ...recipient, iban: e.target.value })}
                         placeholder="DE89370400440532013000"
-                        className="h-12 font-mono text-sm"
+                        className="h-12 font-mono text-sm placeholder:text-muted-foreground/60"
                         required
                       />
                     </div>
@@ -484,7 +525,7 @@ export function SendMoneyFlow() {
                         value={recipient.bic || ""}
                         onChange={(e) => setRecipient({ ...recipient, bic: e.target.value })}
                         placeholder="SOBKDEB2XXX"
-                        className="h-12 font-mono text-sm"
+                        className="h-12 font-mono text-sm placeholder:text-muted-foreground/60"
                         required
                       />
                     </div>
@@ -499,7 +540,7 @@ export function SendMoneyFlow() {
                         value={recipient.sortCode || ""}
                         onChange={(e) => setRecipient({ ...recipient, sortCode: e.target.value })}
                         placeholder="04-00-04"
-                        className="h-12"
+                        className="h-12 placeholder:text-muted-foreground/60"
                         required
                       />
                     </div>
@@ -509,7 +550,7 @@ export function SendMoneyFlow() {
                         value={recipient.accountNumber}
                         onChange={(e) => setRecipient({ ...recipient, accountNumber: e.target.value })}
                         placeholder="31926819"
-                        className="h-12"
+                        className="h-12 placeholder:text-muted-foreground/60 normal-case"
                         required
                       />
                     </div>
@@ -523,7 +564,7 @@ export function SendMoneyFlow() {
                       value={recipient.accountNumber}
                       onChange={(e) => setRecipient({ ...recipient, accountNumber: e.target.value })}
                       placeholder="1234567890"
-                      className="h-12"
+                      className="h-12 placeholder:text-muted-foreground/60 normal-case"
                       required
                     />
                   </div>
@@ -566,10 +607,10 @@ export function SendMoneyFlow() {
               <div className="flex items-center justify-between pb-3 border-b">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Sending to</p>
-                  <p className="font-semibold text-lg">{recipient.name}</p>
+                  <p className="font-semibold text-lg">{formatName(recipient.name)}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">{selectedCountry?.flag}</span>
+                  <span className="text-2xl">{getCurrencyFlag(currency)}</span>
                   <p className="font-medium">{currencyNames[currency]}</p>
                 </div>
               </div>
@@ -644,10 +685,15 @@ export function SendMoneyFlow() {
                 {currencySymbols[currency]}
               </span>
               <Input
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9.]/g, '')
+                  if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                    setAmount(value)
+                  }
+                }}
                 className="h-28 !text-5xl pl-16 border-0 shadow-sm font-semibold"
                 placeholder="0.00"
                 required
@@ -702,69 +748,85 @@ export function SendMoneyFlow() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-muted-foreground mb-1">To</p>
-                  <p className="font-medium">{recipient.name}</p>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end mt-0.5">
-                    <span className="text-base">{selectedCountry?.flag}</span>
-                    {currencyNames[currency]}
+                  <p className="font-medium">{formatName(recipient.name)}</p>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                    {formatName(recipient.bankName)} • {recipient.accountNumber}
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {suggestedAccount && (
-            <Card className="border-0 shadow-sm relative">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <p className="text-xs text-muted-foreground mb-2">Sending from</p>
-                    <p className="font-semibold text-xl mb-1">
-                      {selectedAccount?.accountName || suggestedAccount.accountName}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedAccount?.bankName || suggestedAccount.bankName} •{" "}
-                      {selectedAccount?.accountNumber || suggestedAccount.accountNumber}
-                    </p>
+          <Card className="border-0 shadow-sm relative">
+            <CardContent className="p-6">
+              {suggestedAccount ? (
+                <>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground mb-2">Sending from</p>
+                        <p className="font-semibold text-xl mb-1">
+                          {selectedAccount?.accountName || suggestedAccount?.accountName}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {selectedAccount?.bankName || suggestedAccount?.bankName} •{" "}
+                          {selectedAccount?.fullAccountNumber || suggestedAccount?.fullAccountNumber}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">
+                        {getCurrencyFlag(selectedAccount?.currency || suggestedAccount?.currency)}
+                      </span>
+                      <p className="font-medium">
+                        {currencyNames[selectedAccount?.currency || suggestedAccount?.currency]}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">
-                      {
-                        countries.find((c) => c.currency === (selectedAccount?.currency || suggestedAccount.currency))
-                          ?.flag
-                      }
+
+                  <div className="flex items-end justify-between pt-4 border-t">
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">Available Balance</p>
+                        <p className="text-3xl font-semibold">
+                          {currencySymbols[selectedAccount?.currency || suggestedAccount?.currency]}
+                          {(selectedAccount?.availableBalance || suggestedAccount?.availableBalance).toLocaleString(
+                            "en-US",
+                            { minimumFractionDigits: 2 },
+                          )}
+                        </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground mb-1">After transfer</p>
+                      <p className="text-lg font-medium text-muted-foreground">
+                        {currencySymbols[selectedAccount?.currency || suggestedAccount?.currency]}
+                        {(
+                          (selectedAccount?.availableBalance || suggestedAccount?.availableBalance) -
+                          convertAmount(Number.parseFloat(amount), currency, selectedAccount?.currency || suggestedAccount?.currency)
+                        ).toLocaleString("en-US", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="bg-red-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-2xl">⚠️</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Insufficient Balance</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    None of your accounts have enough balance to cover this transfer of{" "}
+                    <span className="font-semibold">
+                      {currencySymbols[currency]}
+                      {Number.parseFloat(amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                     </span>
-                    <p className="font-medium">
-                      {currencyNames[selectedAccount?.currency || suggestedAccount.currency]}
-                    </p>
-                  </div>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    You can switch accounts below to see all available balances, or reduce the transfer amount.
+                  </p>
                 </div>
+              )}
 
-                <div className="flex items-end justify-between pt-4 border-t">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Available Balance</p>
-                    <p className="text-3xl font-semibold">
-                      {currencySymbols[selectedAccount?.currency || suggestedAccount.currency]}
-                      {(selectedAccount?.availableBalance || suggestedAccount.availableBalance).toLocaleString(
-                        "en-US",
-                        { minimumFractionDigits: 2 },
-                      )}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-muted-foreground mb-1">After transfer</p>
-                    <p className="text-lg font-medium text-muted-foreground">
-                      {currencySymbols[selectedAccount?.currency || suggestedAccount.currency]}
-                      {(
-                        (selectedAccount?.availableBalance || suggestedAccount.availableBalance) -
-                        Number.parseFloat(amount)
-                      ).toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </p>
-                  </div>
-                </div>
-
-                <Popover open={accountPopoverOpen} onOpenChange={setAccountPopoverOpen}>
+              <Popover open={accountPopoverOpen} onOpenChange={setAccountPopoverOpen}>
                   <PopoverTrigger asChild>
                     <button className="absolute bottom-4 left-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted hover:bg-muted/80 transition-colors text-xs font-medium text-muted-foreground hover:text-foreground">
                       <ArrowRightLeft className="h-3 w-3" />
@@ -777,65 +839,84 @@ export function SendMoneyFlow() {
                       <p className="text-xs text-muted-foreground mt-1">Choose an account with sufficient balance</p>
                     </div>
                     <div className="max-h-[400px] overflow-y-auto p-3 space-y-2">
-                      {mockAccounts
-                        .filter((acc) => acc.availableBalance >= Number.parseFloat(amount || "0"))
-                        .map((acc) => {
-                          const isSelected =
-                            selectedAccount?.id === acc.id || (!selectedAccountId && acc.id === suggestedAccount.id)
-                          const isDifferentCurrency = acc.currency !== currency
+                      {mockAccounts.map((acc) => {
+                        const isSelected =
+                          selectedAccount?.id === acc.id || (!selectedAccountId && acc.id === suggestedAccount?.id)
+                        const isDifferentCurrency = acc.currency !== currency
+                        const transferAmount = Number.parseFloat(amount || "0")
+                        const convertedAmount = convertAmount(transferAmount, currency, acc.currency)
+                        const hasInsufficientBalance = acc.availableBalance < convertedAmount
+                        const isInsufficient = hasInsufficientBalance
 
-                          return (
-                            <button
-                              key={acc.id}
-                              onClick={() => {
-                                setSelectedAccountId(acc.id)
-                                setAccountPopoverOpen(false)
-                              }}
-                              className={`w-full text-left p-3 rounded-lg border transition-all ${
-                                isSelected
-                                  ? "border-primary bg-primary/5"
+                        return (
+                          <button
+                            key={acc.id}
+                            onClick={() => {
+                              setSelectedAccountId(acc.id)
+                              setAccountPopoverOpen(false)
+                            }}
+                            className={`w-full text-left p-3 rounded-lg border transition-all ${
+                              isSelected
+                                ? "border-primary bg-primary/5"
+                                : isInsufficient
+                                  ? "border-red-200 bg-red-50/50 hover:border-red-300"
                                   : "border-border hover:border-primary/50 hover:bg-muted/50"
-                              }`}
-                            >
-                              <div className="flex items-start justify-between mb-2">
-                                <div className="flex-1">
-                                  <p className="font-medium text-sm">{acc.accountName}</p>
-                                  <p className="text-xs text-muted-foreground mt-0.5">
-                                    {acc.bankName} • {acc.accountNumber}
-                                  </p>
-                                </div>
+                            }`}
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex-1">
+                                <p className="font-medium text-sm">{acc.accountName}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {acc.bankName} • {acc.fullAccountNumber}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
                                 {isSelected && (
-                                  <div className="bg-primary text-primary-foreground rounded-full p-0.5 ml-2">
+                                  <div className="bg-primary text-primary-foreground rounded-full p-0.5">
                                     <Check className="h-3 w-3" />
                                   </div>
                                 )}
-                              </div>
-
-                              <div className="flex items-center justify-between pt-2 border-t">
-                                <div>
-                                  <p className="text-xs text-muted-foreground">Available</p>
-                                  <p className="text-sm font-semibold">
-                                    {currencySymbols[acc.currency]}
-                                    {acc.availableBalance.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                                  </p>
-                                </div>
-
-                                {isDifferentCurrency && (
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                    <ArrowRightLeft className="h-3 w-3" />
-                                    <span>Conversion</span>
+                                {isInsufficient && (
+                                  <div className="bg-red-100 text-red-600 rounded-full p-1">
+                                    <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
                                   </div>
                                 )}
                               </div>
-                            </button>
-                          )
-                        })}
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2 border-t">
+                              <div>
+                                <p className="text-xs text-muted-foreground">Available</p>
+                                <p className={`text-sm font-semibold ${isInsufficient ? "text-red-600" : ""}`}>
+                                  {currencySymbols[acc.currency]}
+                                  {acc.availableBalance.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                                </p>
+                                {isInsufficient && (
+                                  <p className="text-xs text-red-500 mt-1">
+                                    Need {currencySymbols[acc.currency]}
+                                    {(convertedAmount - acc.availableBalance).toLocaleString("en-US", { minimumFractionDigits: 2 })}{" "}
+                                    more
+                                  </p>
+                                )}
+                              </div>
+
+                              {isDifferentCurrency && (
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <ArrowRightLeft className="h-3 w-3" />
+                                  <span>Conversion</span>
+                                </div>
+                              )}
+                            </div>
+                          </button>
+                        )
+                      })}
                     </div>
                   </PopoverContent>
                 </Popover>
               </CardContent>
             </Card>
-          )}
 
           <div className="flex gap-3">
             <Button onClick={() => setStep(2)} variant="outline" size="lg" className="h-11">
@@ -844,7 +925,7 @@ export function SendMoneyFlow() {
             </Button>
             <Button
               onClick={handleNext}
-              disabled={!selectedAccount || selectedAccount.availableBalance < Number.parseFloat(amount)}
+              disabled={!selectedAccount || (selectedAccount.availableBalance < Number.parseFloat(amount) && selectedAccount.currency === currency)}
               size="lg"
               className="flex-1 h-11"
             >
@@ -881,10 +962,6 @@ export function SendMoneyFlow() {
                   {Number.parseFloat(amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                 </p>
               </div>
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-xl">{selectedCountry?.flag}</span>
-                <p className="text-sm text-muted-foreground">{currencyNames[currency]}</p>
-              </div>
             </CardContent>
           </Card>
 
@@ -896,12 +973,12 @@ export function SendMoneyFlow() {
                   <div className="flex-1">
                     <p className="font-semibold text-lg mb-1">{selectedAccount.accountName}</p>
                     <p className="text-sm text-muted-foreground">
-                      {selectedAccount.bankName} • {selectedAccount.accountNumber}
+                      {selectedAccount.bankName} • {selectedAccount.fullAccountNumber}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xl">
-                      {countries.find((c) => c.currency === selectedAccount.currency)?.flag}
+                      {getCurrencyFlag(selectedAccount.currency)}
                     </span>
                     <p className="text-sm font-medium">{currencyNames[selectedAccount.currency]}</p>
                   </div>
@@ -934,12 +1011,12 @@ export function SendMoneyFlow() {
               <CardContent className="p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <p className="font-semibold text-lg mb-1">{recipient.name}</p>
-                    <p className="text-sm text-muted-foreground">{recipient.bankName}</p>
+                    <p className="font-semibold text-lg mb-1">{formatName(recipient.name)}</p>
+                    <p className="text-sm text-muted-foreground">{formatName(recipient.bankName)}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{selectedCountry?.flag}</span>
-                    <p className="text-sm font-medium">{recipient.country}</p>
+                    <span className="text-xl">{getCurrencyFlag(currency)}</span>
+                    <p className="text-sm font-medium">{currencyNames[currency]}</p>
                   </div>
                 </div>
 
@@ -1045,17 +1122,29 @@ export function SendMoneyFlow() {
             </DialogTitle>
             <DialogDescription>Enter your 4-digit PIN to authorize this transfer</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <Input
-              type="password"
-              inputMode="numeric"
-              maxLength={4}
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
-              placeholder="••••"
-              className="h-14 text-center text-2xl tracking-[1em] font-semibold"
-              autoFocus
-            />
+          <div className="space-y-6 py-4">
+            <div className="relative flex justify-center gap-3">
+              {[0, 1, 2, 3].map((index) => (
+                <div
+                  key={index}
+                  className={`w-12 h-12 border-2 rounded-lg flex items-center justify-center text-2xl font-semibold bg-background ${
+                    pin.length === index ? "border-primary" : "border-input"
+                  }`}
+                >
+                  {pin[index] || ""}
+                </div>
+              ))}
+              <Input
+                type="password"
+                inputMode="numeric"
+                maxLength={4}
+                value={pin}
+                onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+                placeholder=""
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                autoFocus
+              />
+            </div>
             <Button onClick={handlePinSubmit} disabled={pin.length !== 4} className="w-full h-11" size="lg">
               Confirm Transfer
             </Button>

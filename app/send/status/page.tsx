@@ -15,6 +15,14 @@ function TransferStatusContent() {
   const currency = searchParams.get("currency") as keyof typeof currencySymbols
   const recipient = searchParams.get("recipient")
 
+  const formatName = (name: string) => {
+    return name
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
@@ -53,7 +61,7 @@ function TransferStatusContent() {
           </div>
           <div className="flex justify-between items-center pb-4 border-b">
             <span className="text-sm text-muted-foreground">Recipient</span>
-            <span className="font-medium">{recipient}</span>
+            <span className="font-medium">{formatName(recipient || "")}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-muted-foreground">Status</span>
@@ -70,7 +78,7 @@ function TransferStatusContent() {
           </Link>
         </Button>
         <Button asChild size="lg" className="flex-1 h-11">
-          <Link href="/dashboard/transactions">View All Transactions</Link>
+          <Link href="/transactions">View All Transactions</Link>
         </Button>
       </div>
     </div>
