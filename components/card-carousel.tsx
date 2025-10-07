@@ -3,16 +3,7 @@
 import { useState } from "react"
 import { ChevronLeft, ChevronRight, Snowflake } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-interface Card {
-  id: string
-  type: "debit" | "credit"
-  last4: string
-  cardholderName: string
-  expiryDate: string
-  status: "active" | "inactive" | "frozen"
-  balance: number
-}
+import { type Card } from "@/lib/mock-data"
 
 interface CardCarouselProps {
   cards: Card[]

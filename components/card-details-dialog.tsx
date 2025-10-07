@@ -13,7 +13,7 @@ interface Card {
   cvv: string
   cardholderName: string
   expiryDate: string
-  status: "active" | "inactive" | "frozen"
+  status: "active" | "inactive" | "blocked"
   balance: number
   billingAddress: {
     street: string

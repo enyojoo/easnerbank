@@ -9,7 +9,8 @@ import {
   Plus, 
   Search, 
   Download,
-  MoreHorizontal
+  MoreHorizontal,
+  DollarSign
 } from "lucide-react"
 import {
   DropdownMenu,

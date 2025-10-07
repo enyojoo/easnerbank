@@ -33,7 +33,14 @@ export function DateRangeFilter({
     if (timePeriod === "custom" && customDateRange.from && customDateRange.to) {
       return `${format(customDateRange.from, "MMM d")} - ${format(customDateRange.to, "MMM d")}`
     }
-    const labels = { all: "All time", "7d": "7 days", "30d": "30 days", "90d": "90 days", "1y": "1 year" }
+    const labels: Record<TimePeriod, string> = { 
+      all: "All time", 
+      "7d": "7 days", 
+      "30d": "30 days", 
+      "90d": "90 days", 
+      "1y": "1 year",
+      custom: "Custom range"
+    }
     return labels[timePeriod] || "Select period"
   }
 

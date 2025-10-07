@@ -37,7 +37,7 @@ export function TransferForm() {
         <CardDescription>Send money via ACH, Wire, or Book Transfer</CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs value={transferType} onValueChange={(v) => setTransferType(v as "ach" | "wire" | "book")}>
+        <Tabs value={transferType} onValueChange={(v: string) => setTransferType(v as "ach" | "wire" | "book")}>
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="ach">ACH Transfer</TabsTrigger>
             <TabsTrigger value="wire">Wire Transfer</TabsTrigger>
@@ -55,7 +55,7 @@ export function TransferForm() {
                   <SelectContent>
                     {mockAccounts.map((acc) => (
                       <SelectItem key={acc.id} value={acc.id}>
-                        {acc.type} {acc.accountNumber} - ${acc.balance.toFixed(2)}
+                        {acc.accountName} {acc.accountNumber} - ${acc.balance.toFixed(2)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -140,7 +140,7 @@ export function TransferForm() {
                   <SelectContent>
                     {mockAccounts.map((acc) => (
                       <SelectItem key={acc.id} value={acc.id}>
-                        {acc.type} {acc.accountNumber} - ${acc.balance.toFixed(2)}
+                        {acc.accountName} {acc.accountNumber} - ${acc.balance.toFixed(2)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -225,7 +225,7 @@ export function TransferForm() {
                   <SelectContent>
                     {mockAccounts.map((acc) => (
                       <SelectItem key={acc.id} value={acc.id}>
-                        {acc.type} {acc.accountNumber} - ${acc.balance.toFixed(2)}
+                        {acc.accountName} {acc.accountNumber} - ${acc.balance.toFixed(2)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -243,7 +243,7 @@ export function TransferForm() {
                       .filter((acc) => acc.id !== fromAccount)
                       .map((acc) => (
                         <SelectItem key={acc.id} value={acc.id}>
-                          {acc.type} {acc.accountNumber} - ${acc.balance.toFixed(2)}
+                          {acc.accountName} {acc.accountNumber} - ${acc.balance.toFixed(2)}
                         </SelectItem>
                       ))}
                   </SelectContent>

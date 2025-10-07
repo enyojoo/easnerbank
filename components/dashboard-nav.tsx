@@ -97,7 +97,7 @@ export function DashboardNav() {
             const Icon = item.icon
             const isActive = pathname === item.href
             return (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href || "#"}>
                 <Button
                   variant="ghost"
                   className={cn(
@@ -111,14 +111,14 @@ export function DashboardNav() {
               </Link>
             )
           } else {
-            const isOpen = openGroups.has(item.key)
-            const hasActiveChild = item.items.some(child => pathname === child.href)
+            const isOpen = openGroups.has(item.key || "")
+            const hasActiveChild = item.items?.some(child => pathname === child.href) || false
             
             return (
               <div key={item.key} className="space-y-2">
                 <Button
                   variant="ghost"
-                  onClick={() => toggleGroup(item.key)}
+                  onClick={() => toggleGroup(item.key || "")}
                   className={cn(
                     "w-full justify-between gap-3 h-9 px-3 text-sm font-normal",
                     hasActiveChild && "bg-accent text-accent-foreground font-medium",
@@ -137,7 +137,7 @@ export function DashboardNav() {
                 
                 {isOpen && (
                   <div className="ml-4 space-y-1.5">
-                    {item.items.map((child) => {
+                    {item.items?.map((child) => {
                       const ChildIcon = child.icon
                       const isActive = pathname === child.href
                       return (

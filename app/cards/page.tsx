@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { mockCards, mockCardTransactions, type Transaction } from "@/lib/mock-data"
+import { mockCards, mockCardTransactions, type Transaction, type Card } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { Plus, Eye, Settings, Snowflake, ArrowUpRight, ArrowDownLeft } from "lucide-react"
 import { CardCarousel } from "@/components/card-carousel"
@@ -149,7 +149,7 @@ export default function CardsPage() {
                     <div>
                       <p className="text-sm font-medium">{transaction.description}</p>
                       <p className="text-xs text-muted-foreground">
-                        {transaction.category.toUpperCase()} • {new Date(transaction.date).toLocaleDateString()} •{" "}
+                        {transaction.category?.toUpperCase() || 'UNKNOWN'} • {new Date(transaction.date).toLocaleDateString()} •{" "}
                         {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                       </p>
                     </div>
