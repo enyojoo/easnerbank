@@ -24,7 +24,7 @@ import {
 import { RecipientForm } from "@/components/recipient-form"
 
 // Mock recipients data
-const mockRecipients = [
+const mockBeneficiaries = [
   {
     id: "1",
     name: "John Doe",
@@ -92,7 +92,7 @@ export default function RecipientsPage() {
   const [selectedRecipient, setSelectedRecipient] = useState<any>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
-  const filteredRecipients = mockRecipients.filter((recipient) =>
+  const filteredBeneficiaries = mockBeneficiaries.filter((recipient) =>
     recipient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recipient.bankName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     recipient.country.toLowerCase().includes(searchTerm.toLowerCase())
@@ -123,21 +123,21 @@ export default function RecipientsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Recipients</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage your saved recipients for quick transfers</p>
+          <h1 className="text-2xl font-semibold text-foreground">Beneficiaries</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage your saved beneficiaries for quick transfers</p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Recipient
+              Add Beneficiary
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-6xl">
             <DialogHeader>
-              <DialogTitle>Add New Recipient</DialogTitle>
+              <DialogTitle>Add New Beneficiary</DialogTitle>
               <DialogDescription>
-                Enter the recipient's details to save them for future transfers.
+                Enter the beneficiary's details to save them for future transfers.
               </DialogDescription>
             </DialogHeader>
             <RecipientForm onSuccess={handleCreateSuccess} />
@@ -147,17 +147,17 @@ export default function RecipientsPage() {
 
       <Card className="border-0 shadow-sm">
         <CardContent className="p-0">
-          {filteredRecipients.length === 0 ? (
+          {filteredBeneficiaries.length === 0 ? (
             <div className="py-12 text-center">
               <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No recipients found</h3>
+              <h3 className="text-lg font-semibold mb-2">No beneficiaries found</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                {searchTerm ? "Try adjusting your search terms" : "Get started by adding your first recipient"}
+                {searchTerm ? "Try adjusting your search terms" : "Get started by adding your first beneficiary"}
               </p>
               {!searchTerm && (
                 <Button onClick={() => setIsCreateDialogOpen(true)}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Add Recipient
+                  Add Beneficiary
                 </Button>
               )}
             </div>
@@ -167,7 +167,7 @@ export default function RecipientsPage() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search recipients..."
+                    placeholder="Search beneficiaries..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-9"
@@ -175,7 +175,7 @@ export default function RecipientsPage() {
                 </div>
               </div>
               <div className="divide-y">
-                {filteredRecipients.map((recipient) => (
+                {filteredBeneficiaries.map((recipient) => (
                   <div
                     key={recipient.id}
                     className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
@@ -233,9 +233,9 @@ export default function RecipientsPage() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-6xl">
           <DialogHeader>
-            <DialogTitle>Edit Recipient</DialogTitle>
+            <DialogTitle>Edit Beneficiary</DialogTitle>
             <DialogDescription>
-              Update the recipient's details.
+              Update the beneficiary's details.
             </DialogDescription>
           </DialogHeader>
           <RecipientForm 

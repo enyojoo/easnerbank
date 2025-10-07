@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Link from "next/link"
 
 interface BusinessDropdownProps {
   businessName: string
@@ -78,9 +79,11 @@ export function BusinessDropdown({ businessName, adminName, adminEmail, onSignOu
         
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem className="gap-2">
-          <Settings className="h-4 w-4" />
-          <span>Account settings</span>
+        <DropdownMenuItem asChild className="gap-2">
+          <Link href="/settings">
+            <Settings className="h-4 w-4" />
+            <span>Account settings</span>
+          </Link>
         </DropdownMenuItem>
         
         <DropdownMenuItem className="gap-2 text-red-600 focus:text-red-600" onClick={onSignOut}>

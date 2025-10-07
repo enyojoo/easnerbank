@@ -388,7 +388,7 @@ export function SendMoneyFlow() {
         <div className="space-y-6">
           <div>
             <h1 className="text-2xl font-semibold text-foreground">Who are you sending to?</h1>
-            <p className="text-sm text-muted-foreground mt-1">Enter recipient information</p>
+            <p className="text-sm text-muted-foreground mt-1">Enter beneficiary information</p>
           </div>
 
           <div className="mb-6">
@@ -455,7 +455,7 @@ export function SendMoneyFlow() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    Recipient Name
+                    Beneficiary Name
                   </label>
                   <Input
                     value={recipient.name}
