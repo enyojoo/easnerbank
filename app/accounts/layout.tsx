@@ -13,7 +13,7 @@ export default function AccountsLayout({ children }: { children: React.ReactNode
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/auth/login")
     }
   }, [user, isLoading, router])
 

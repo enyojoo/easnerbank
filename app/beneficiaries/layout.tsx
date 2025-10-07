@@ -13,7 +13,7 @@ export default function RecipientsLayout({ children }: { children: React.ReactNo
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/auth/login")
     }
   }, [user, isLoading, router])
 

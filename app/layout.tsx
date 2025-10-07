@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
-import { AuthProvider } from "@/lib/auth-context"
+import { ClientAuthProvider } from "@/components/client-auth-provider"
 import { Suspense } from "react"
 import { LoadingSpinner } from "@/components/loading-spinner"
 import "./globals.css"
@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <Suspense fallback={<LoadingSpinner />}>
-          <AuthProvider>{children}</AuthProvider>
+          <ClientAuthProvider>{children}</ClientAuthProvider>
           <Analytics />
         </Suspense>
       </body>

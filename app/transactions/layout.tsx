@@ -13,7 +13,7 @@ export default function TransactionsLayout({ children }: { children: React.React
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/auth/login")
     }
   }, [user, isLoading, router])
 

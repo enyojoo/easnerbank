@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { 
   User, 
   Mail, 
-  Code, 
   Building2, 
   Shield, 
   Globe, 
@@ -33,13 +32,6 @@ const settingsSections = [
         icon: Mail,
         href: "/settings/communication"
       },
-      {
-        id: "developers",
-        title: "Developers",
-        description: "Workbench, developer tools, and more.",
-        icon: Code,
-        href: "/settings/developers"
-      }
     ]
   },
   {

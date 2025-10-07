@@ -15,7 +15,7 @@ export default function CustomersLayout({
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/login")
+      router.push("/auth/login")
     }
   }, [user, isLoading, router])
 

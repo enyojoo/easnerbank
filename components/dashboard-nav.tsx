@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
-import { CreditCard, Home, ArrowLeftRight, History, Search, Landmark, Users, FileText, UserCheck, ChevronDown, ChevronRight, Send, Receipt } from "lucide-react"
+import { CreditCard, Home, ArrowLeftRight, History, Search, Landmark, Users, FileText, UserCheck, ChevronDown, ChevronRight, Send, Receipt, Code } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -73,7 +73,8 @@ export function DashboardNav() {
         { href: "/customers", label: "Customers", icon: UserCheck }
       ]
     },
-    { href: "/transactions", label: "Transactions", icon: History, type: "single" }
+    { href: "/transactions", label: "Transactions", icon: History, type: "single" },
+    { href: "/developers", label: "Developers", icon: Code, type: "single" }
   ]
 
   const businessName = "Easner Bank" // This could come from user context or props

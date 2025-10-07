@@ -13,7 +13,7 @@ import {
   Save, 
   Send, 
   Eye,
-  Calendar,
+  Calendar as CalendarIcon,
   DollarSign,
   User,
   Mail,
@@ -34,6 +34,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns"
 import Link from "next/link"
 
 // Mock customers data
@@ -77,6 +84,7 @@ export default function CreateInvoicePage() {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isCustomerDialogOpen, setIsCustomerDialogOpen] = useState(false)
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
   // Calculate totals
   const subtotal = formData.lineItems.reduce((sum, item) => sum + item.amount, 0)
@@ -207,9 +215,9 @@ export default function CreateInvoicePage() {
                 Invoice Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
                   <Label htmlFor="currency">Currency</Label>
                   <Select value={formData.currency} onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}>
                     <SelectTrigger>
@@ -222,17 +230,36 @@ export default function CreateInvoicePage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label htmlFor="dueDate">Due Date</Label>
-                  <Input
-                    id="dueDate"
-                    type="date"
-                    value={formData.dueDate}
-                    onChange={(e) => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
-                  />
+                  <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formData.dueDate ? format(new Date(formData.dueDate), "PPP") : "Pick a date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={formData.dueDate ? new Date(formData.dueDate) : undefined}
+                        onSelect={(date) => {
+                          if (date) {
+                            setFormData(prev => ({ ...prev, dueDate: date.toISOString().split('T')[0] }))
+                            setIsCalendarOpen(false)
+                          }
+                        }}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label htmlFor="memo">Memo</Label>
                 <Input
                   id="memo"
@@ -253,10 +280,10 @@ export default function CreateInvoicePage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {formData.lineItems.map((item, index) => (
                   <div key={item.id} className="grid grid-cols-12 gap-4 items-end">
-                    <div className="col-span-5">
+                    <div className="col-span-5 space-y-2">
                       <Label>Description</Label>
                       <Input
                         placeholder="Item description"
@@ -264,7 +291,7 @@ export default function CreateInvoicePage() {
                         onChange={(e) => updateLineItem(item.id, 'description', e.target.value)}
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-2 space-y-2">
                       <Label>Qty</Label>
                       <Input
                         type="number"
@@ -273,7 +300,7 @@ export default function CreateInvoicePage() {
                         onChange={(e) => updateLineItem(item.id, 'quantity', parseInt(e.target.value) || 1)}
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-2 space-y-2">
                       <Label>Unit Price</Label>
                       <Input
                         type="number"
@@ -283,7 +310,7 @@ export default function CreateInvoicePage() {
                         onChange={(e) => updateLineItem(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
                       />
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-2 space-y-2">
                       <Label>Amount</Label>
                       <Input
                         value={`$${item.amount.toFixed(2)}`}
