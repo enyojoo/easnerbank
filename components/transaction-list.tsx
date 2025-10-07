@@ -55,7 +55,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                   <div
                     className={`text-lg font-semibold ${txn.direction === "credit" ? "text-green-600" : "text-red-600"}`}
                   >
-                    {txn.direction === "credit" ? "+" : "-"}${txn.amount.toFixed(2)}
+                    {txn.direction === "credit" ? "+" : "-"}${Math.abs(txn.amount).toFixed(2)}
                   </div>
                   <Badge
                     variant={

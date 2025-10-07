@@ -159,7 +159,7 @@ export default function CardsPage() {
                       transaction.direction === "credit" ? "text-green-600" : "text-foreground"
                     }`}
                   >
-                    {transaction.direction === "credit" ? "+" : "-"}${transaction.amount.toFixed(2)}
+                    {transaction.direction === "credit" ? "+" : "-"}${Math.abs(transaction.amount).toFixed(2)}
                   </p>
                 </div>
               ))}
