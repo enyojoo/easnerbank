@@ -12,7 +12,7 @@ export default function AuthLayout({
         <Link href="/" className="flex justify-center">
           <Image
             src="https://seeqjiebmrnolcyydewj.supabase.co/storage/v1/object/public/brand/Easner%20Logo.svg"
-            alt="Easner Bank"
+                  alt="Easner Banking"
             width={120}
             height={34}
             className="h-8 w-auto"

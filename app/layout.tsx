@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/components/loading-spinner"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Easner Bank",
+  title: "Easner Banking",
   description: "Modern banking built on Column infrastructure",
   generator: "v0.app",
   icons: {

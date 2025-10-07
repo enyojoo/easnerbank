@@ -66,7 +66,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-          <CardDescription>Get started with Easner Bank</CardDescription>
+          <CardDescription>Get started with Easner Banking</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -211,7 +211,7 @@ export default function SignupPage() {
                   htmlFor="email-updates"
                   className="text-sm font-medium leading-5 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Get emails from Easner Bank about product updates, industry news, and events. 
+                  Get emails from Easner Banking about product updates, industry news, and events. 
                   You can <Link href="#" className="text-primary hover:underline">unsubscribe</Link> at any time.{" "}
                   <Link href="#" className="text-primary hover:underline">Privacy Policy</Link>
                 </label>

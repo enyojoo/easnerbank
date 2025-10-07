@@ -426,7 +426,7 @@ export default function CreateInvoicePage() {
                 <p className="text-sm text-muted-foreground">Invoice number: DRAFT-{Date.now().toString().slice(-6)}</p>
               </div>
               <div className="text-right">
-                <p className="font-semibold">Easner Bank</p>
+                <p className="font-semibold">Easner Banking</p>
                 <p className="text-sm text-muted-foreground">123 Business St</p>
                 <p className="text-sm text-muted-foreground">New York, NY 10001</p>
               </div>

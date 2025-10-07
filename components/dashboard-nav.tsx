@@ -77,14 +77,14 @@ export function DashboardNav() {
     { href: "/developers", label: "Developers", icon: Code, type: "single" }
   ]
 
-  const businessName = "Easner Bank" // This could come from user context or props
+  const businessName = "Easner Banking" // This could come from user context or props
 
   return (
     <div className="fixed left-0 top-0 h-screen w-56 border-r bg-sidebar flex flex-col">
       <div className="flex items-center gap-2 px-6 py-5 border-b">
         <Image
           src="https://seeqjiebmrnolcyydewj.supabase.co/storage/v1/object/public/brand/Easner%20Logo.svg"
-          alt="Easner Bank"
+          alt="Easner Banking"
           width={100}
           height={28}
           className="h-7 w-auto"

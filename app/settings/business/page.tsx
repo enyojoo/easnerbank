@@ -11,7 +11,7 @@ import Link from "next/link"
 export default function BusinessPage() {
   const [editingSection, setEditingSection] = useState<string | null>(null)
   const [formData, setFormData] = useState({
-    businessName: "Easner Bank",
+    businessName: "Easner Banking",
     businessType: "Financial Services",
     registrationNumber: "123456789",
     taxId: "12-3456789",
@@ -23,7 +23,7 @@ export default function BusinessPage() {
     state: "NY",
     zipCode: "10001",
     country: "United States",
-    bankName: "Easner Bank",
+    bankName: "Easner Banking",
     accountNumber: "1234567890",
     routingNumber: "021000021",
     swiftCode: "EASNUS33"
