@@ -993,7 +993,7 @@ export function SendMoneyFlow() {
 
           <Card className="border-0 shadow-sm bg-primary/5">
             <CardContent className="p-8 text-center">
-              <p className="text-sm text-muted-foreground mb-2">Transfer Amount</p>
+              <p className="text-sm text-muted-foreground mb-2">You're sending</p>
               <div className="flex items-center justify-center gap-2 mb-2">
                 <p className="text-5xl font-semibold">
                   {currencySymbols[currency]}
@@ -1050,7 +1050,9 @@ export function SendMoneyFlow() {
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <p className="font-semibold text-lg mb-1">{formatName(recipient.name)}</p>
-                    <p className="text-sm text-muted-foreground">{formatName(recipient.bankName)}</p>
+                    <p className="text-sm text-muted-foreground mb-1">{formatName(recipient.bankName)}</p>
+                    <p className="text-xs text-muted-foreground">{recipient.email}</p>
+                    <p className="text-xs text-muted-foreground">{recipient.phone}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{getCurrencyFlag(currency)}</span>
