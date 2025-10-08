@@ -91,7 +91,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                In base currency from all accounts
+                In your base currency from all accounts
               </p>
             </div>
             <div className="flex gap-2">

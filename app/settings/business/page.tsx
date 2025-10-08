@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Building2, Globe, FileText, CreditCard, Shield, Edit, X, Check } from "lucide-react"
 import Link from "next/link"
 
@@ -26,7 +27,8 @@ export default function BusinessPage() {
     bankName: "Easner Banking",
     accountNumber: "1234567890",
     routingNumber: "021000021",
-    swiftCode: "EASNUS33"
+    swiftCode: "EASNUS33",
+    baseCurrency: "USD"
   })
 
   const handleEdit = (section: string) => {
@@ -144,6 +146,48 @@ export default function BusinessPage() {
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   disabled={editingSection !== 'business'}
                 />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="baseCurrency">Base Currency</Label>
+                <Select 
+                  value={formData.baseCurrency}
+                  onValueChange={(value) => handleInputChange('baseCurrency', value)}
+                  disabled={editingSection !== 'business'}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select base currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD - US Dollar</SelectItem>
+                    <SelectItem value="EUR">EUR - Euro</SelectItem>
+                    <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                    <SelectItem value="JPY">JPY - Japanese Yen</SelectItem>
+                    <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
+                    <SelectItem value="AUD">AUD - Australian Dollar</SelectItem>
+                    <SelectItem value="CHF">CHF - Swiss Franc</SelectItem>
+                    <SelectItem value="CNY">CNY - Chinese Yuan</SelectItem>
+                    <SelectItem value="SEK">SEK - Swedish Krona</SelectItem>
+                    <SelectItem value="NOK">NOK - Norwegian Krone</SelectItem>
+                    <SelectItem value="DKK">DKK - Danish Krone</SelectItem>
+                    <SelectItem value="PLN">PLN - Polish Zloty</SelectItem>
+                    <SelectItem value="CZK">CZK - Czech Koruna</SelectItem>
+                    <SelectItem value="HUF">HUF - Hungarian Forint</SelectItem>
+                    <SelectItem value="BRL">BRL - Brazilian Real</SelectItem>
+                    <SelectItem value="MXN">MXN - Mexican Peso</SelectItem>
+                    <SelectItem value="INR">INR - Indian Rupee</SelectItem>
+                    <SelectItem value="KRW">KRW - South Korean Won</SelectItem>
+                    <SelectItem value="SGD">SGD - Singapore Dollar</SelectItem>
+                    <SelectItem value="HKD">HKD - Hong Kong Dollar</SelectItem>
+                    <SelectItem value="NZD">NZD - New Zealand Dollar</SelectItem>
+                    <SelectItem value="ZAR">ZAR - South African Rand</SelectItem>
+                    <SelectItem value="TRY">TRY - Turkish Lira</SelectItem>
+                    <SelectItem value="RUB">RUB - Russian Ruble</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  This currency will be used for all financial reporting and calculations across the app
+                </p>
               </div>
             </CardContent>
           </Card>
