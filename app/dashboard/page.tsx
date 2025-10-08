@@ -77,7 +77,7 @@ export default function DashboardPage() {
       </div>
 
       <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-50/50 to-gray-50/50 dark:from-slate-900/30 dark:to-gray-900/30 backdrop-blur-sm">
-        <CardHeader className="pb-4 pt-8">
+        <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-2">Total Balance</p>
